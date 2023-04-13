@@ -19,18 +19,18 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="前言 Premise本篇文章参考了许多内容，特别是一小时学会快速傅里叶变换和快速傅里叶变换（FFT）超详解，目的是整理思路，也会用到一点线性代数。所有参考内容，会附在文章后。如果能优化文章也会更新。 FFT是什么FFT是一项能快速计算离散傅里叶变换(DFT)的算法，时间复杂度为$O(nlogn)$.多用来加速两个同次的多项式乘法。该算法于1965年由J.W.Cooley和T.W.Tukey提出。所">
+  <meta name="description" content="前言 Premise 本篇文章参考了许多内容，特别是一小时学会快速傅里叶变换和快速傅里叶变换（FFT）超详解，目的是整理思路，也会用到一点线性代数。所有参考内容，会附在文章后。如果能优化文章也会更新。 # FFT是什么 FFT是一项能快速计算离散傅里叶变换(DFT)的算法，时间复杂度为\(O(nlogn)\).多用来加速两个同次的多项式乘法。 该算法于1965年由J.W.Cooley和T.">
 <meta property="og:type" content="article">
-<meta property="og:title" content="多项式、复数、快速傅里叶变换FFT(Fast Fourier Transform)">
+<meta property="og:title" content="多项式、复数、快速傅里叶变换FFT(Fast Fourier Transform)、卷积">
 <meta property="og:url" content="http://example.com/2023/04/12/%E5%A4%9A%E9%A1%B9%E5%BC%8F%E3%80%81%E5%A4%8D%E6%95%B0%E3%80%81%E5%BF%AB%E9%80%9F%E5%82%85%E9%87%8C%E5%8F%B6%E5%8F%98%E6%8D%A2FFT-Fast-Fourier-Transform/index.html">
 <meta property="og:site_name" content="Cheng&#39;s blog">
-<meta property="og:description" content="前言 Premise本篇文章参考了许多内容，特别是一小时学会快速傅里叶变换和快速傅里叶变换（FFT）超详解，目的是整理思路，也会用到一点线性代数。所有参考内容，会附在文章后。如果能优化文章也会更新。 FFT是什么FFT是一项能快速计算离散傅里叶变换(DFT)的算法，时间复杂度为$O(nlogn)$.多用来加速两个同次的多项式乘法。该算法于1965年由J.W.Cooley和T.W.Tukey提出。所">
+<meta property="og:description" content="前言 Premise 本篇文章参考了许多内容，特别是一小时学会快速傅里叶变换和快速傅里叶变换（FFT）超详解，目的是整理思路，也会用到一点线性代数。所有参考内容，会附在文章后。如果能优化文章也会更新。 # FFT是什么 FFT是一项能快速计算离散傅里叶变换(DFT)的算法，时间复杂度为\(O(nlogn)\).多用来加速两个同次的多项式乘法。 该算法于1965年由J.W.Cooley和T.">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2023-04-12T15:49:06.000Z">
-<meta property="article:modified_time" content="2023-04-12T16:12:24.098Z">
+<meta property="article:modified_time" content="2023-04-13T08:41:52.645Z">
 <meta property="article:author" content="Chengcheng">
 <meta property="article:tag" content="-algorithm">
 <meta name="twitter:card" content="summary">
@@ -48,7 +48,7 @@
   };
 </script>
 
-  <title>多项式、复数、快速傅里叶变换FFT(Fast Fourier Transform) | Cheng's blog</title>
+  <title>多项式、复数、快速傅里叶变换FFT(Fast Fourier Transform)、卷积 | Cheng's blog</title>
   
 
 
@@ -210,7 +210,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          多项式、复数、快速傅里叶变换FFT(Fast Fourier Transform)
+          多项式、复数、快速傅里叶变换FFT(Fast Fourier Transform)、卷积
         </h1>
 
         <div class="post-meta">
@@ -227,7 +227,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-04-13 00:12:24" itemprop="dateModified" datetime="2023-04-13T00:12:24+08:00">2023-04-13</time>
+                <time title="修改时间：2023-04-13 16:41:52" itemprop="dateModified" datetime="2023-04-13T16:41:52+08:00">2023-04-13</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -252,7 +252,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>7.8k</span>
+              <span>8k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -271,23 +271,139 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="前言-Premise"><a href="#前言-Premise" class="headerlink" title="前言 Premise"></a>前言 Premise</h1><p>本篇文章参考了许多内容，特别是<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/31584464">一小时学会快速傅里叶变换</a>和<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/347091298">快速傅里叶变换（FFT）超详解</a>，目的是整理思路，也会用到一点线性代数。所有参考内容，会附在文章后。如果能优化文章也会更新。</p>
-<h1 id="FFT是什么"><a href="#FFT是什么" class="headerlink" title="FFT是什么"></a>FFT是什么</h1><p>FFT是一项能快速计算离散傅里叶变换(DFT)的算法，时间复杂度为$O(nlogn)$.多用来加速两个同次的多项式乘法。<br>该算法于1965年由J.W.Cooley和T.W.Tukey提出。所以也可以叫Cooley-Tukey算法。<br>不知道什么是离散傅里叶变换也无所谓。下面通过考虑从计算多项式乘积的方式出发，看看是怎么做到这个复杂度的。</p>
-<h1 id="什么是多项式，什么是多项式乘积，思路从哪开始？"><a href="#什么是多项式，什么是多项式乘积，思路从哪开始？" class="headerlink" title="什么是多项式，什么是多项式乘积，思路从哪开始？"></a>什么是多项式，什么是多项式乘积，思路从哪开始？</h1><p>n次多项式指的就是这么一个式子$f(x)&#x3D;a_0+a_1x+a_2x^2+…+a_{n-1}x^{n-1}$.其中$a_0,a_1,a_2,…,a_{n-1}$都是系数呀。<br>两个多项式乘积就是，假如一个叫$A(x)$一个叫$B(x)$,系数分别是$a$和$b$，那么表示出来就是$(AB)(x)&#x3D;A(x)\times B(x)&#x3D;(a_0+a_1x+a_2x^2+…+a_{n-1}x^{n-1})(b_0+b_1x+b_2x^2+…+b_{n-1}x^{n-1})&#x3D;\sum_{i&#x3D;0}^na_ix^{i-1}\sum_i&#x3D;0^nb_{i-1}x^{i-1}$.这个结果其实也被叫做卷积。<br>我们要求的结果就是这个新的多项式的各项系数。<br>在接下来的推导中需要用到的多项式的两种表示方式，被叫做系数表示和点值表示。对于一个普通的n-1次多项式，可以写成$f(x)&#x3D;\sum_{i&#x3D;0}^{n-1}a_{i}x^{i}$。为了留下它的信息，可以把它的系数拿出来，组成$(a_0,a_1,…,a_{n-1})$,的形式。或者，通过一个结论，即n-1次多项式上n个不同的点能唯一确定这个多项式。意思是我们可以往一个n-1次多项式里边带n个值，组成${(x_0,f(x_0)),(x_1,f(x_1)),…,(x_{n-1},f(n-1))}$这样一个式子，虽然我们没有得到想要的结果，但是系数的信息还是被保存下来了，如果我们想还是能从里面得出系数的.<br>这样两种表示方法，就能留下我们想要表示的多项式的信息。接下来我们考虑用代码实现一下两个n次多项式$A(x),B(x)$相乘，其得到的结果为$C(x)$.最简单的思路大概是两层循环，遍历得到结果，如</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">for(int i = 0; i&lt;n; i++)</span><br><span class="line">	for(int j = 0; j&lt;n; i++) &#123;</span><br><span class="line">		c[i+j] += a[i] * b[j]; //这里存的是系数 </span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
-<p>时间复杂度是$O(n^2)$的。我们也可以说这是通过确定$C(x)$的各项系数，来确定结果。那么如果我们先得到它的n个值呢？这样我们就需要先得到已知的两个多项式的n个值，再分别相乘。假设我们已经得到了已知的两个多项式的点值表示。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">for(int i = 0; i&lt;n; i++) &#123;</span><br><span class="line">	c[i] += a[i] * b[i]; //这里存的是带的n个值啦</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>时间复杂度是$O(n)$。当然了，这样考虑过于简单了，比如我们至少还要回答如何求出已知的两个多项式的n个值。但这提示我们如果通过先计算所谓的点值表示，再想办法转化为系数，是否能改进$O(n^2)$的时间复杂度？同时，我们还有一个问题，该选什么作为代入的n个值？<br>假如站在结论回头看，这里就是思路的出发点。总体来说分为三步，第一步是得到两个已知多项式的点值表示，第二步是对应相乘得到我们想要的多项式的点值表示，第三步是想办法将它转化成系数表示。我们把第一步叫做离散傅里叶变换DFT(Discret Fourier Transform)，第三步叫离散傅里叶逆变换(Inverse Discret Fourier Transform)。另外，代入的n个值，最终选择了单位根-复平面上的单位圆上平均分布的n个点。我们先介绍一点单位根。</p>
-<h1 id="单位根"><a href="#单位根" class="headerlink" title="单位根"></a>单位根</h1><p>单位根是在复平面上平均分布的n个点，记作$\omega_n$，在$(1,0)$处的叫$\omega_n^0$,辐角(就是角度啦)为正且最小的是$\omega_n^1$,依次还有$\omega_n^2\omega_n^3…\omega_n^n$,而$\omega_n^n$其实也在(1,0)处。之后能做出这个图的话应该会补图。<br>不过，写成这样明显是不好表示的，不过因为它是在圆上的，所以我们也可以写成$\omega_n^k&#x3D;cos\theta+isin\theta&#x3D;cos(k\frac{2\pi}{n})+isin(k\frac{2\pi}{n})$.这个式子，结合复数相加好像向量相加的性质来看，它的实部加上虚部，很自然就是我们的单位根。同样也可以通过对$e^{ik\frac{n}{2}}$ 泰勒展开得到。因为实际上单位根也可以写成前面这个东西。<br>单位根的上下标自然也是可以随便换的。不是非要n和k，下标可以理解成均分的个数，而上标可以理解成选的第几个点，0就是起点，1就是第一个点，不过如果上标超过下标，那就说明多选了一圈或很多圈呗。又因为复数相乘，表现上好像向量的角度相加了，长度变为两个向量的模长相乘。所以说单位根有个幂，只会改变角度，长度乘完还是1，也就是说还是单位根.比如$(\omega_n^1)^2&#x3D;(\omega_n^2)^1$.所以单位根的幂跟上标也好像能组合一样。<br>往下推导我们要用到两个性质，第一条叫做折半引理，是说$\omega_{2n}^{2k}&#x3D;\omega_n^k$,不就是说，你均分和选的点的个数同时倍增或倍减，选的点还是一样嘛,所以进一步我们也可以说$\omega_{mn}^{mk}&#x3D;\omega_{n}^{k}$。第二条叫做消去引理，长这样$\omega_n^{k+\frac{n}{2}}&#x3D;-\omega_n^k$,那就是说多往后选一半的点,也就是说转半圈，跟$\omega_n^k$所在终点不是关于原点对称的，那我们给它整体乘个负号就好了。<br>证明这两个性质当然也可以去展开，但是没什么意思，就不写了。</p>
-<h1 id="第一步-离散傅里叶变换-DFT"><a href="#第一步-离散傅里叶变换-DFT" class="headerlink" title="第一步 离散傅里叶变换 DFT"></a>第一步 离散傅里叶变换 DFT</h1><p>先随便考虑一个多项式$f(x)&#x3D;a_0+a_1x+a_2x^2+…+a_{n-2}x^{n-2}+a_{n-1}x^{n-1}$.我们按项数的奇偶给它分类，那就变成<br>$\begin{align}f(x)&#x3D;(a_0+a_2x^2+…+a_{n-2}x^{n-2})+(a_1x+…+a_{n-1}x^{n-1})\&#x3D;(a_0+a_2x^2+…+a_{n-2}x^{n-2})+x(a_1+…+a_{n-1}x^{n-2})\end{align}$<br>如果我们进一步对左右都奇偶分类，改写成这样的形式呢？即使是分成了四部分，还是可以继续再分成八部分，最终分为很多层。这就让人联想到递推或者递归。记左边的为$f_1(x)$,右边的为$f_2(x)$,每一次的递推就形如$f(x)&#x3D;f_1(x)+xf_2(x)$.不过为了利用单位根的性质,最好每次递推都能让下标变小，联想到折半引理，我们希望代进去后有个次数，变成$f(x)&#x3D;f_1(x^2)+xf_2(x^2)$，那么把左边和右边式子里面的$x$的次数降一级就能实现了,延续一开始的式子，新的$f_1(x)&#x3D;a_0+a_2x+…+a_{n-2}x^{n-3}$,而新的$f_2(x)&#x3D;a_1+…+a_{n-1}x^{n-3}$.<br>考虑每个单位根，对于上半圆上的点，有$f(\omega_n^k)&#x3D;f_1(\omega_n^{2k})+\omega_n^kf_2(\omega_n^{2k})&#x3D;f_1(\omega_{\frac{n}{2}}^{k})+\omega_n^kf_2(\omega_{\frac{n}{2}}^k),(k&lt;\frac{n}{2})$。而对于下半圆来说，$、$.既然写成这样了，就可以递归去解出每个点并加在一起，比如$f(\omega_n^1)&#x3D;f_1(\omega_{\frac{n}{2}}^1)+\omega_n^1f_2(\omega_{\frac{n}{2}}^1)$,而进一步$f_1(\omega_{\frac{n}{2}}^1)&#x3D;f_1(\omega_{\frac{n}{4}}^1)+\omega_{\frac{n}{2}}^1f_1(\omega_{\frac{n}{4}}^1)$,$f_2(\omega_{\frac{n}{2}}^1)&#x3D;f_2(\omega_{\frac{n}{4}}^1)+\omega_{\frac{n}{2}}^1f_2(\omega_{\frac{n}{4}}^1)$.就像这样去一直分，下标不断除二，直到$\omega_1^1$,而这个东西其实就是1.就好像说你把圆分成了1份而不是n份了，我们只有在$(1,0)$这的一个点，这样你上标不管是几，也就是说选的是第几个点，都只能选在$(1,0)$这个点，也就是说$\omega_1^k&#x3D;1,k\in N^+$。<br>分析一下时间复杂度，对于求每个点值表示，例如$f(\omega_{n}^1)$, 第$1$步往下分下标会变成$\dfrac{n}{2}$,第$2$步往下分下标会变成$\dfrac{n}{4}$,自然第$k$步下标就变成$\cfrac{n}{2^k}$,可是我们只想让它变成$1$,那么只要做$\log_{2}{n}$步就好了,时间复杂度即$O(logn)$。但我们得求n次才行，所以总的时间复杂度就是$O(nlogn)$.或者由master公式$T(n)&#x3D;2T(\frac{n}{2})+O(n)&#x3D;O(nlogn)$.<br>这部分就叫做离散傅里叶变换，代码实现一下。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">void FFT(complex&lt;double&gt; *a, int n, int inv) //n是现在的下标,inv是inverse，即逆的意思，先不用管这层，关键是也作为虚部的符号</span><br><span class="line">&#123;</span><br><span class="line">	if(n == 1) //只有一份就不继续分啦，直接返回</span><br><span class="line">		return;</span><br><span class="line">	int mid = n / 2; </span><br><span class="line">	complex&lt;double&gt; f1[mid + 1], f2[mid + 1];</span><br><span class="line">	for(int i = 0; i &lt;= n; i += 2) // 按照奇偶分项</span><br><span class="line">	&#123;</span><br><span class="line">		f1[i/2] = a[i];               </span><br><span class="line">		f2[i/2] = a[i+1];</span><br><span class="line">	&#125;</span><br><span class="line">	FFT(f1, mid, inv); //递归分治</span><br><span class="line">	FFT(f2, mid, inv);</span><br><span class="line">	complex&lt;double&gt; w0(1, 0), wn(cos(2*pi/n)), inv *sin(2*pi\n);</span><br><span class="line">	for(int i = 0; i &lt; mid; ++i, w0 *=wn)</span><br><span class="line">	&#123;</span><br><span class="line">		a[i] = f1[i] + w0 * f2[i];</span><br><span class="line">		a[i + n\2] = f1[i] - w0 * f2[i];</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h1 id="第二步-对应相乘，得到所求多项式的点值表示"><a href="#第二步-对应相乘，得到所求多项式的点值表示" class="headerlink" title="第二步 对应相乘，得到所求多项式的点值表示"></a>第二步 对应相乘，得到所求多项式的点值表示</h1><p>随便写一下</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">for(int i = 0; i &lt;= len; ++i)</span><br><span class="line">	a[i] = a[i] * b[i];</span><br></pre></td></tr></table></figure>
-<h1 id="第三步-离散傅里叶逆变换-IDFT"><a href="#第三步-离散傅里叶逆变换-IDFT" class="headerlink" title="第三步 离散傅里叶逆变换 IDFT"></a>第三步 离散傅里叶逆变换 IDFT</h1><p>现在我们得到了所求多项式的点值表示，而在第一步中，我们是对已知的两个多项式都应用了离散傅里叶逆变换，那么我们当然也可以对要求的多项式应用啦。先来看看如何用矩阵来表示求点值表示的过程。<br>$$\begin{bmatrix}1 &amp; 1 &amp; 1 &amp; \cdots &amp; 1 \1 &amp; (\omega_n^1)^1 &amp; (\omega_n^1)^2 &amp; \cdots &amp; (\omega_n^1) ^ {n-1}\1 &amp; (\omega_n^2)^1 &amp; (\omega_n^2)^2 &amp; \cdots &amp; (\omega_n^2) ^ {n-1} \ \vdots &amp; \vdots &amp;\vdots &amp; \ddots &amp; \vdots \ 1 &amp; (\omega_n^{n-1})^1 &amp; (\omega_n^{n-1})^2 &amp; \cdots &amp; (\omega_n^{n-1}) ^ {n-1}\end{bmatrix} \begin{bmatrix}a_0 \ a _ 1 \ a _ 2 \ \vdots \ a _ {n-1}\ \end{bmatrix} &#x3D; \begin{bmatrix}y_0 \ y _ 1 \ y _ 2 \ \vdots \ y _ {n-1}\ \end{bmatrix}$$<br>这个表示没有奇偶分类等过程，不过我们求的时候会用到来简化。最左边的矩阵是我们带的值，中间的矩阵是系数矩阵，最右边的矩阵是代值得到的结果矩阵，也就是点值表示。那么，如果我们想解出系数表示，也就是第二个矩阵，就要找到最左边矩阵的逆矩阵，并且两边左乘这个逆矩阵。<br>直接给出这个逆矩阵<br>$$\frac1n\begin{bmatrix}1&amp;1&amp;1&amp;\cdots&amp;1\ 1&amp;(\omega_n^{n-1})^1&amp;({\omega_n^{n-1}})^2&amp;\cdots&amp;(\omega_{n}^{n-1})^{n-1}\ 1&amp;(\omega_n^{n-2})^1&amp;({\omega_n^{n-2}})^2&amp;\cdots&amp;(\omega_{n}^{n-2})^{n-1}\ \vdots&amp;\vdots&amp;\vdots&amp;\ddots&amp;\vdots\ 1&amp;(\omega_n^1)^1&amp;{(\omega_n^1)}^2&amp;\cdots&amp;(\omega_{n}^1)^{n-1}\end{bmatrix}$$<br>这就是说<br>$$\frac1n\begin{bmatrix}1 &amp; 1 &amp; 1 &amp; \cdots &amp; 1 \1 &amp; (\overline{\omega_n^1})^1 &amp; (\overline{\omega_n^1})^2 &amp; \cdots &amp; (\overline{\omega_n^1}) ^ {n-1}\1 &amp; (\overline{\omega_n^2})^1 &amp; (\overline{\omega_n^2})^2 &amp; \cdots &amp; (\overline{\omega_n^2}) ^ {n-1} \ \vdots &amp; \vdots &amp;\vdots &amp; \ddots &amp; \vdots \ 1 &amp; \overline{(\omega_n^{n-1}})^1 &amp; (\overline{\omega_n^{n-1}})^2 &amp; \cdots &amp; (\overline{\omega_n^{n-1}}) ^ {n-1}\end{bmatrix}\begin{bmatrix}y_0 \ y _ 1 \ y _ 2 \ \vdots \ y _ {n-1}\ \end{bmatrix}&#x3D;\begin{bmatrix}a_0 \ a _ 1 \ a _ 2 \ \vdots \ a _ {n-1}\ \end{bmatrix}$$<br>形式上，是跟DFT相似的，所以我们只需要重复利用一下DFT的部分，当然是改造过的版本。</p>
-<h1 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h1><p>贴一下</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//LuoguP3803</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="type">const</span> <span class="type">int</span> NR = <span class="number">1</span> &lt;&lt; <span class="number">22</span>;</span><br><span class="line"><span class="type">const</span> <span class="type">double</span> eps = <span class="number">1e-6</span>, pi = <span class="built_in">acos</span>(<span class="number">-1.0</span>);</span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line">complex&lt;<span class="type">double</span>&gt; a[NR], b[NR]; <span class="comment">//complex为C++自带虚数</span></span><br><span class="line"><span class="type">int</span> n, m;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">FFT</span><span class="params">(complex&lt;<span class="type">double</span>&gt; *a, <span class="type">int</span> n, <span class="type">int</span> inv)</span> <span class="comment">//inv为虚部符号，inv为1时FFT，inv为-1时IFFT</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (n == <span class="number">1</span>) <span class="comment">//如果需要转换的只有一项就直接返回</span></span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    <span class="type">int</span> mid = n / <span class="number">2</span>;</span><br><span class="line">    complex&lt;<span class="type">double</span>&gt; A1[mid + <span class="number">1</span>], A2[mid + <span class="number">1</span>];</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt;= n; i += <span class="number">2</span>) <span class="comment">//拆分多项式</span></span><br><span class="line">    &#123;</span><br><span class="line">        A1[i / <span class="number">2</span>] = a[i];</span><br><span class="line">        A2[i / <span class="number">2</span>] = a[i + <span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">FFT</span>(A1, mid, inv); <span class="comment">//递归分治</span></span><br><span class="line">    <span class="built_in">FFT</span>(A2, mid, inv);</span><br><span class="line">    <span class="function">complex&lt;<span class="type">double</span>&gt; <span class="title">w0</span><span class="params">(<span class="number">1</span>, <span class="number">0</span>)</span>, <span class="title">wn</span><span class="params">(cos(<span class="number">2</span> * pi / n), inv * sin(<span class="number">2</span> * pi / n))</span></span>; <span class="comment">//单位根</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; mid; ++i, w0 *= wn)                               <span class="comment">//合并多项式</span></span><br><span class="line">    &#123;</span><br><span class="line">        a[i] = A1[i] + w0 * A2[i];</span><br><span class="line">        a[i + n / <span class="number">2</span>] = A1[i] - w0 * A2[i];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d%d&quot;</span>, &amp;n, &amp;m);</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt;= n; ++i) <span class="comment">//输入第一个多项式</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="type">double</span> x;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%lf&quot;</span>, &amp;x);</span><br><span class="line">        a[i].<span class="built_in">real</span>(x); <span class="comment">//complex类型变量.real(x)意味着将实数部赋为x，real()返回实数部值</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt;= m; ++i) <span class="comment">//输入第二个多项式</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="type">double</span> x;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%lf&quot;</span>, &amp;x);</span><br><span class="line">        b[i].<span class="built_in">real</span>(x);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">int</span> len = <span class="number">1</span> &lt;&lt; <span class="built_in">max</span>((<span class="type">int</span>)<span class="built_in">ceil</span>(<span class="built_in">log2</span>(n + m)), <span class="number">1</span>); <span class="comment">//由于FFT需要项数为2的整数次方倍，所以多项式次数len为第一个大于n+m的二的正整数次方</span></span><br><span class="line">    <span class="built_in">FFT</span>(a, len, <span class="number">1</span>);                                <span class="comment">//系数表达转点值表达</span></span><br><span class="line">    <span class="built_in">FFT</span>(b, len, <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt;= len; ++i)</span><br><span class="line">        a[i] = a[i] * b[i];                       <span class="comment">//O(n)乘法</span></span><br><span class="line">    <span class="built_in">FFT</span>(a, len, <span class="number">-1</span>);                              <span class="comment">//点值表达转系数表达</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt;= n + m; ++i)              <span class="comment">//输出</span></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%.0f &quot;</span>, a[i].<span class="built_in">real</span>() / len + eps); <span class="comment">//记得要除n，eps为解决掉精度问题</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h1 id="分析递归过程并利用蝴蝶操作优化"><a href="#分析递归过程并利用蝴蝶操作优化" class="headerlink" title="分析递归过程并利用蝴蝶操作优化"></a>分析递归过程并利用蝴蝶操作优化</h1><p>之后再写。</p>
-<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/31584464">一小时学会快速傅里叶变换（Fast Fourier Transform）</a><br><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1G4411D7kZ/?spm_id_from=333.999.0.0&vd_source=0143f5056c728cce33d658b3ff5db3f4">【官方双语】微分方程概论-第五章：在3.14分钟内理解e^iπ</a><br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/347091298">快速傅里叶变换（FFT）超详解</a></p>
+        <h1 id="前言-premise">前言 Premise</h1>
+<p>本篇文章参考了许多内容，特别是<a
+target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/31584464">一小时学会快速傅里叶变换</a>和<a
+target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/347091298">快速傅里叶变换（FFT）超详解</a>，目的是整理思路，也会用到一点线性代数。所有参考内容，会附在文章后。如果能优化文章也会更新。
+# FFT是什么
+FFT是一项能快速计算离散傅里叶变换(DFT)的算法，时间复杂度为<span
+class="math inline">\(O(nlogn)\)</span>.多用来加速两个同次的多项式乘法。
+该算法于1965年由J.W.Cooley和T.W.Tukey提出。所以也可以叫Cooley-Tukey算法。
+不知道什么是离散傅里叶变换也无所谓。下面通过考虑从计算多项式乘积的方式出发，看看是怎么做到这个复杂度的。
+<span id="more"></span> # 什么是多项式，什么是多项式乘积，思路从哪开始？
+n次多项式指的就是这么一个式子<span
+class="math inline">\(f(x)=a_0+a_1x+a_2x^2+...+a_{n-1}x^{n-1}\)</span>.其中<span
+class="math inline">\(a_0,a_1,a_2,...,a_{n-1}\)</span>都是系数呀。</p>
+<p>两个多项式乘积就是，假如一个叫<span
+class="math inline">\(A(x)\)</span>一个叫<span
+class="math inline">\(B(x)\)</span>,系数分别是<span
+class="math inline">\(a\)</span>和<span
+class="math inline">\(b\)</span>，那么表示出来就是<span
+class="math inline">\((AB)(x)=A(x)\times
+B(x)=(a_0+a_1x+a_2x^2+...+a_{n-1}x^{n-1})(b_0+b_1x+b_2x^2+...+b_{n-1}x^{n-1})=\sum_{i=0}^na_ix^{i-1}\sum_i=0^nb_{i-1}x^{i-1}\)</span>.</p>
+<p>我们要求的结果就是这个新的多项式的各项系数。而由已知的两个多项式的系数得到这个结果的过程也被叫做卷积，所以学会了这个同时也就学会了如何快速计算卷积。</p>
+<p>在接下来的推导中需要用到的多项式的两种表示方式，被叫做系数表示和点值表示。对于一个普通的n-1次多项式，可以写成<span
+class="math inline">\(f(x)=\sum_{i=0}^{n-1}a_{i}x^{i}\)</span>。为了留下它的信息，可以把它的系数拿出来，组成<span
+class="math inline">\((a_0,a_1,...,a_{n-1})\)</span>,的形式。或者，通过一个结论，即n-1次多项式上n个不同的点能唯一确定这个多项式。意思是我们可以往一个n-1次多项式里边带n个值，组成<span
+class="math inline">\({(x_0,f(x_0)),(x_1,f(x_1)),...,(x_{n-1},f(n-1))}\)</span>这样一个式子，虽然我们没有得到想要的结果，但是系数的信息还是被保存下来了，如果我们想还是能从里面得出系数的.
+这样两种表示方法，就能留下我们想要表示的多项式的信息。接下来我们考虑用代码实现一下两个n次多项式<span
+class="math inline">\(A(x),B(x)\)</span>相乘，其得到的结果为<span
+class="math inline">\(C(x)\)</span>.最简单的思路大概是两层循环，遍历得到结果，如
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">for(int i = 0; i&lt;n; i++)</span><br><span class="line">	for(int j = 0; j&lt;n; i++) &#123;</span><br><span class="line">		c[i+j] += a[i] * b[j]; //这里存的是系数 </span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure> 时间复杂度是<span
+class="math inline">\(O(n^2)\)</span>的。我们也可以说这是通过确定<span
+class="math inline">\(C(x)\)</span>的各项系数，来确定结果。好处是思路比较直接，坏处是时间太长了。那么如果我们先得到它的n个值呢？这样我们就需要先得到已知的两个多项式的n个值，再分别相乘。假设我们已经得到了已知的两个多项式的点值表示。
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">for(int i = 0; i&lt;n; i++) &#123;</span><br><span class="line">	c[i] += a[i] * b[i]; //这里存的是带的n个值啦</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure> 时间复杂度是<span
+class="math inline">\(O(n)\)</span>。当然了，这样考虑过于简单了，比如我们至少还要回答如何求出已知的两个多项式的n个值。但这提示我们如果通过先计算所谓的点值表示，再想办法转化为系数，是否能改进<span
+class="math inline">\(O(n^2)\)</span>的时间复杂度？同时，我们还有一个问题，该选什么作为代入的n个值？</p>
+<p>假如站在结论回头看，这里就是思路的出发点。总体来说分为三步，第一步是得到两个已知多项式的点值表示，第二步是对应相乘得到我们想要的多项式的点值表示，第三步是想办法将它转化成系数表示。我们把第一步叫做离散傅里叶变换DFT(Discret
+Fourier Transform)，第三步叫离散傅里叶逆变换(Inverse Discret Fourier
+Transform)。另外，代入的n个值，最终选择了单位根-复平面上的单位圆上平均分布的n个点。我们先介绍一点单位根。
+# 单位根 单位根是在复平面上平均分布的n个点，记作<span
+class="math inline">\(\omega_n\)</span>，在<span
+class="math inline">\((1,0)\)</span>处的叫<span
+class="math inline">\(\omega_n^0\)</span>,辐角(就是角度啦)为正且最小的是<span
+class="math inline">\(\omega_n^1\)</span>,依次还有<span
+class="math inline">\(\omega_n^2\omega_n^3...\omega_n^n\)</span>,而<span
+class="math inline">\(\omega_n^n\)</span>其实也在(1,0)处。之后能做出这个图的话应该会补图。</p>
+<p>不过，写成这样明显是不好表示的，不过因为它是在圆上的，所以我们也可以写成<span
+class="math inline">\(\omega_n^k=cos\theta+isin\theta=cos(k\frac{2\pi}{n})+isin(k\frac{2\pi}{n})\)</span>.这个式子，结合复数相加好像向量相加的性质来看，它的实部加上虚部，很自然就是我们的单位根。同样也可以通过对<span
+class="math inline">\(e^{ik\frac{n}{2}}\)</span>
+泰勒展开得到。因为实际上单位根也可以写成前面这个东西。</p>
+<p>单位根的上下标自然也是可以随便换的。不是非要n和k，下标可以理解成均分的个数，而上标可以理解成选的第几个点，0就是起点，1就是第一个点，不过如果上标超过下标，那就说明多选了一圈或很多圈呗。又因为复数相乘，表现上好像向量的角度相加了，长度变为两个向量的模长相乘。所以说单位根有个幂，只会改变角度，长度乘完还是1，也就是说还是单位根.比如<span
+class="math inline">\((\omega_n^1)^2=(\omega_n^2)^1\)</span>.所以单位根的幂跟上标也好像能组合一样。</p>
+<p>往下推导我们要用到两个性质，第一条叫做折半引理，是说<span
+class="math inline">\(\omega_{2n}^{2k}=\omega_n^k\)</span>,不就是说，你均分和选的点的个数同时倍增或倍减，选的点还是一样嘛,所以进一步我们也可以说<span
+class="math inline">\(\omega_{mn}^{mk}=\omega_{n}^{k}\)</span>。第二条叫做消去引理，长这样<span
+class="math inline">\(\omega_n^{k+\frac{n}{2}}=-\omega_n^k\)</span>,那就是说多往后选一半的点,也就是说转半圈，跟<span
+class="math inline">\(\omega_n^k\)</span>所在终点不是关于原点对称的，那我们给它整体乘个负号就好了。
+证明这两个性质当然也可以去展开，但是没什么意思，就不写了。 # 第一步
+离散傅里叶变换 DFT 先随便考虑一个多项式<span
+class="math inline">\(f(x)=a_0+a_1x+a_2x^2+...+a_{n-2}x^{n-2}+a_{n-1}x^{n-1}\)</span>.我们按项数的奇偶给它分类，那就变成</p>
+<p><span
+class="math display">\[\begin{align}f(x)=(a_0+a_2x^2+...+a_{n-2}x^{n-2})+(a_1x+...+a_{n-1}x^{n-1})\\
+=(a_0+a_2x^2+...+a_{n-2}x^{n-2})+x(a_1+...+a_{n-1}x^{n-2})\end{align}\]</span></p>
+<p>如果我们进一步对左右都奇偶分类，改写成这样的形式呢？即使是分成了四部分，还是可以继续再分成八部分，最终分为很多层。这就让人联想到递推或者递归。记左边的为<span
+class="math inline">\(f_1(x)\)</span>,右边的为<span
+class="math inline">\(f_2(x)\)</span>,每一次的递推就形如<span
+class="math inline">\(f(x)=f_1(x)+xf_2(x)\)</span>.不过为了利用单位根的性质,最好每次递推都能让下标变小，联想到折半引理，我们希望代进去后有个次数，变成<span
+class="math inline">\(f(x)=f_1(x^2)+xf_2(x^2)\)</span>，那么把左边和右边式子里面的<span
+class="math inline">\(x\)</span>的次数降一级就能实现了,延续一开始的式子，新的<span
+class="math inline">\(f_1(x)=a_0+a_2x+...+a_{n-2}x^{n-3}\)</span>,而新的<span
+class="math inline">\(f_2(x)=a_1+...+a_{n-1}x^{n-3}\)</span>.</p>
+<p>考虑每个单位根，对于上半圆上的点，有<span
+class="math inline">\(f(\omega_n^k)=f_1(\omega_n^{2k})+\omega_n^kf_2(\omega_n^{2k})=f_1(\omega_{\frac{n}{2}}^{k})+\omega_n^kf_2(\omega_{\frac{n}{2}}^k),(k&lt;\frac{n}{2})\)</span>。而对于下半圆来说，<span
+class="math inline">\(、\)</span>.既然写成这样了，就可以递归去解出每个点并加在一起，比如<span
+class="math inline">\(f(\omega_n^1)=f_1(\omega_{\frac{n}{2}}^1)+\omega_n^1f_2(\omega_{\frac{n}{2}}^1)\)</span>,而进一步<span
+class="math inline">\(f_1(\omega_{\frac{n}{2}}^1)=f_1(\omega_{\frac{n}{4}}^1)+\omega_{\frac{n}{2}}^1f_1(\omega_{\frac{n}{4}}^1)\)</span>,<span
+class="math inline">\(f_2(\omega_{\frac{n}{2}}^1)=f_2(\omega_{\frac{n}{4}}^1)+\omega_{\frac{n}{2}}^1f_2(\omega_{\frac{n}{4}}^1)\)</span>.就像这样去一直分，下标不断除二，直到<span
+class="math inline">\(\omega_1^1\)</span>,而这个东西其实就是1.就好像说你把圆分成了1份而不是n份了，我们只有在<span
+class="math inline">\((1,0)\)</span>这的一个点，这样你上标不管是几，也就是说选的是第几个点，都只能选在<span
+class="math inline">\((1,0)\)</span>这个点，也就是说<span
+class="math inline">\(\omega_1^k=1,k\in N^+\)</span>。</p>
+<p>分析一下时间复杂度，对于求每个点值表示，例如<span
+class="math inline">\(f(\omega_{n}^1)\)</span>, 第<span
+class="math inline">\(1\)</span>步往下分下标会变成<span
+class="math inline">\(\dfrac{n}{2}\)</span>,第<span
+class="math inline">\(2\)</span>步往下分下标会变成<span
+class="math inline">\(\dfrac{n}{4}\)</span>,自然第<span
+class="math inline">\(k\)</span>步下标就变成<span
+class="math inline">\(\cfrac{n}{2^k}\)</span>,可是我们只想让它变成<span
+class="math inline">\(1\)</span>,那么只要做<span
+class="math inline">\(\log_{2}{n}\)</span>步就好了,时间复杂度即<span
+class="math inline">\(O(logn)\)</span>。但我们得求n次才行，所以总的时间复杂度就是<span
+class="math inline">\(O(nlogn)\)</span>.或者由master公式<span
+class="math inline">\(T(n)=2T(\frac{n}{2})+O(n)=O(nlogn)\)</span>.</p>
+<p>这部分就叫做离散傅里叶变换，代码实现一下。 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">void FFT(complex&lt;double&gt; *a, int n, int inv) //n是现在的下标,inv是inverse，即逆的意思，先不用管这层，关键是也作为虚部的符号</span><br><span class="line">&#123;</span><br><span class="line">	if(n == 1) //只有一份就不继续分啦，直接返回</span><br><span class="line">		return;</span><br><span class="line">	int mid = n / 2; </span><br><span class="line">	complex&lt;double&gt; f1[mid + 1], f2[mid + 1];</span><br><span class="line">	for(int i = 0; i &lt;= n; i += 2) // 按照奇偶分项</span><br><span class="line">	&#123;</span><br><span class="line">		f1[i/2] = a[i];               </span><br><span class="line">		f2[i/2] = a[i+1];</span><br><span class="line">	&#125;</span><br><span class="line">	FFT(f1, mid, inv); //递归分治</span><br><span class="line">	FFT(f2, mid, inv);</span><br><span class="line">	complex&lt;double&gt; w0(1, 0), wn(cos(2*pi/n)), inv *sin(2*pi\n);</span><br><span class="line">	for(int i = 0; i &lt; mid; ++i, w0 *=wn)</span><br><span class="line">	&#123;</span><br><span class="line">		a[i] = f1[i] + w0 * f2[i];</span><br><span class="line">		a[i + n\2] = f1[i] - w0 * f2[i];</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure> # 第二步
+对应相乘，得到所求多项式的点值表示 随便写一下 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">for(int i = 0; i &lt;= len; ++i)</span><br><span class="line">	a[i] = a[i] * b[i];</span><br></pre></td></tr></table></figure> # 第三步
+离散傅里叶逆变换 IDFT
+现在我们得到了所求多项式的点值表示，而在第一步中，我们是对已知的两个多项式都应用了离散傅里叶逆变换，那么我们当然也可以对要求的多项式应用啦。先来看看如何用矩阵来表示求点值表示的过程。
+<span class="math display">\[\begin{align} \begin{bmatrix}1 &amp; 1
+&amp; 1 &amp; \cdots &amp; 1 \\1 &amp; (\omega_n^1)^1 &amp;
+(\omega_n^1)^2 &amp; \cdots &amp; (\omega_n^1) ^ {n-1}\\1 &amp;
+(\omega_n^2)^1 &amp; (\omega_n^2)^2 &amp; \cdots &amp; (\omega_n^2) ^
+{n-1} \\ \vdots &amp; \vdots &amp;\vdots &amp; \ddots &amp; \vdots \\ 1
+&amp; (\omega_n^{n-1})^1 &amp; (\omega_n^{n-1})^2 &amp; \cdots &amp;
+(\omega_n^{n-1}) ^ {n-1}\end{bmatrix} \begin{bmatrix}a_0 \\ a _ 1 \\ a _
+2 \\ \vdots \\ a _ {n-1}\\ \end{bmatrix} = \begin{bmatrix}y_0 \\ y _ 1
+\\ y _ 2 \\ \vdots \\ y _ {n-1}\\ \end{bmatrix}\quad\\ \end
+{align}\]</span></p>
+<p>这个表示没有奇偶分类等过程，不过我们求的时候会用到来简化。最左边的矩阵是我们带的值，中间的矩阵是系数矩阵，最右边的矩阵是代值得到的结果矩阵，也就是点值表示。那么，如果我们想解出系数表示，也就是第二个矩阵，就要找到最左边矩阵的逆矩阵，并且两边左乘这个逆矩阵。
+直接给出这个逆矩阵 <span class="math display">\[\begin{align}
+\frac1n\begin{bmatrix}1&amp;1&amp;1&amp;\cdots&amp;1\\
+1&amp;(\omega_n^{n-1})^1&amp;({\omega_n^{n-1}})^2&amp;\cdots&amp;(\omega_{n}^{n-1})^{n-1}\\
+1&amp;(\omega_n^{n-2})^1&amp;({\omega_n^{n-2}})^2&amp;\cdots&amp;(\omega_{n}^{n-2})^{n-1}\\
+\vdots&amp;\vdots&amp;\vdots&amp;\ddots&amp;\vdots\\
+1&amp;(\omega_n^1)^1&amp;{(\omega_n^1)}^2&amp;\cdots&amp;(\omega_{n}^1)^{n-1}\end{bmatrix}\\
+\end{align}\]</span> 这就是说 <span class="math display">\[\begin{align}
+\frac1n\begin{bmatrix}1 &amp; 1 &amp; 1 &amp; \cdots &amp; 1 \\1 &amp;
+(\overline{\omega_n^1})^1 &amp; (\overline{\omega_n^1})^2 &amp; \cdots
+&amp; (\overline{\omega_n^1}) ^ {n-1}\\1 &amp; (\overline{\omega_n^2})^1
+&amp; (\overline{\omega_n^2})^2 &amp; \cdots &amp;
+(\overline{\omega_n^2}) ^ {n-1} \\ \vdots &amp; \vdots &amp;\vdots &amp;
+\ddots &amp; \vdots \\ 1 &amp; \overline{(\omega_n^{n-1}})^1 &amp;
+(\overline{\omega_n^{n-1}})^2 &amp; \cdots &amp;
+(\overline{\omega_n^{n-1}}) ^ {n-1}\end{bmatrix}\begin{bmatrix}y_0 \\ y
+_ 1 \\ y _ 2 \\ \vdots \\ y _ {n-1}\\ \end{bmatrix}=\begin{bmatrix}a_0
+\\ a _ 1 \\ a _ 2 \\ \vdots \\ a _ {n-1}\\ \end{bmatrix}\\
+\end{align}\\\]</span>
+形式上，是跟DFT相似的，所以我们只需要重复利用一下DFT的部分，当然是改造过的版本。
+# 代码 贴一下 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//LuoguP3803</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="type">const</span> <span class="type">int</span> NR = <span class="number">1</span> &lt;&lt; <span class="number">22</span>;</span><br><span class="line"><span class="type">const</span> <span class="type">double</span> eps = <span class="number">1e-6</span>, pi = <span class="built_in">acos</span>(<span class="number">-1.0</span>);</span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line">complex&lt;<span class="type">double</span>&gt; a[NR], b[NR]; <span class="comment">//complex为C++自带虚数</span></span><br><span class="line"><span class="type">int</span> n, m;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">FFT</span><span class="params">(complex&lt;<span class="type">double</span>&gt; *a, <span class="type">int</span> n, <span class="type">int</span> inv)</span> <span class="comment">//inv为虚部符号，inv为1时FFT，inv为-1时IFFT</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (n == <span class="number">1</span>) <span class="comment">//如果需要转换的只有一项就直接返回</span></span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    <span class="type">int</span> mid = n / <span class="number">2</span>;</span><br><span class="line">    complex&lt;<span class="type">double</span>&gt; A1[mid + <span class="number">1</span>], A2[mid + <span class="number">1</span>];</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt;= n; i += <span class="number">2</span>) <span class="comment">//拆分多项式</span></span><br><span class="line">    &#123;</span><br><span class="line">        A1[i / <span class="number">2</span>] = a[i];</span><br><span class="line">        A2[i / <span class="number">2</span>] = a[i + <span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">FFT</span>(A1, mid, inv); <span class="comment">//递归分治</span></span><br><span class="line">    <span class="built_in">FFT</span>(A2, mid, inv);</span><br><span class="line">    <span class="function">complex&lt;<span class="type">double</span>&gt; <span class="title">w0</span><span class="params">(<span class="number">1</span>, <span class="number">0</span>)</span>, <span class="title">wn</span><span class="params">(cos(<span class="number">2</span> * pi / n), inv * sin(<span class="number">2</span> * pi / n))</span></span>; <span class="comment">//单位根</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; mid; ++i, w0 *= wn)                               <span class="comment">//合并多项式</span></span><br><span class="line">    &#123;</span><br><span class="line">        a[i] = A1[i] + w0 * A2[i];</span><br><span class="line">        a[i + n / <span class="number">2</span>] = A1[i] - w0 * A2[i];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d%d&quot;</span>, &amp;n, &amp;m);</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt;= n; ++i) <span class="comment">//输入第一个多项式</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="type">double</span> x;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%lf&quot;</span>, &amp;x);</span><br><span class="line">        a[i].<span class="built_in">real</span>(x); <span class="comment">//complex类型变量.real(x)意味着将实数部赋为x，real()返回实数部值</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt;= m; ++i) <span class="comment">//输入第二个多项式</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="type">double</span> x;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%lf&quot;</span>, &amp;x);</span><br><span class="line">        b[i].<span class="built_in">real</span>(x);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">int</span> len = <span class="number">1</span> &lt;&lt; <span class="built_in">max</span>((<span class="type">int</span>)<span class="built_in">ceil</span>(<span class="built_in">log2</span>(n + m)), <span class="number">1</span>); <span class="comment">//由于FFT需要项数为2的整数次方倍，所以多项式次数len为第一个大于n+m的二的正整数次方</span></span><br><span class="line">    <span class="built_in">FFT</span>(a, len, <span class="number">1</span>);                                <span class="comment">//系数表达转点值表达</span></span><br><span class="line">    <span class="built_in">FFT</span>(b, len, <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt;= len; ++i)</span><br><span class="line">        a[i] = a[i] * b[i];                       <span class="comment">//O(n)乘法</span></span><br><span class="line">    <span class="built_in">FFT</span>(a, len, <span class="number">-1</span>);                              <span class="comment">//点值表达转系数表达</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt;= n + m; ++i)              <span class="comment">//输出</span></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%.0f &quot;</span>, a[i].<span class="built_in">real</span>() / len + eps); <span class="comment">//记得要除n，eps为解决掉精度问题</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure> # 分析递归过程并利用蝴蝶操作优化 之后再写。
+# 参考资料 <a
+target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/31584464">一小时学会快速傅里叶变换（Fast
+Fourier Transform）</a> <a
+target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1G4411D7kZ/?spm_id_from=333.999.0.0&amp;vd_source=0143f5056c728cce33d658b3ff5db3f4">【官方双语】微分方程概论-第五章：在3.14分钟内理解e^iπ</a>
+<a
+target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/347091298">快速傅里叶变换（FFT）超详解</a></p>
 
     </div>
 
@@ -313,7 +429,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="http://example.com/2023/04/12/%E5%A4%9A%E9%A1%B9%E5%BC%8F%E3%80%81%E5%A4%8D%E6%95%B0%E3%80%81%E5%BF%AB%E9%80%9F%E5%82%85%E9%87%8C%E5%8F%B6%E5%8F%98%E6%8D%A2FFT-Fast-Fourier-Transform/" title="多项式、复数、快速傅里叶变换FFT(Fast Fourier Transform)">http://example.com/2023/04/12/多项式、复数、快速傅里叶变换FFT-Fast-Fourier-Transform/</a>
+    <a href="http://example.com/2023/04/12/%E5%A4%9A%E9%A1%B9%E5%BC%8F%E3%80%81%E5%A4%8D%E6%95%B0%E3%80%81%E5%BF%AB%E9%80%9F%E5%82%85%E9%87%8C%E5%8F%B6%E5%8F%98%E6%8D%A2FFT-Fast-Fourier-Transform/" title="多项式、复数、快速傅里叶变换FFT(Fast Fourier Transform)、卷积">http://example.com/2023/04/12/多项式、复数、快速傅里叶变换FFT-Fast-Fourier-Transform/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -350,6 +466,13 @@
 
 
         
+    <div class="post-nav">
+      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2023/04/13/test/" rel="next" title="test">
+      test <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
       </footer>
     
   </article>
@@ -407,7 +530,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80-Premise"><span class="nav-number">1.</span> <span class="nav-text">前言 Premise</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#FFT%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-number">2.</span> <span class="nav-text">FFT是什么</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%A4%9A%E9%A1%B9%E5%BC%8F%EF%BC%8C%E4%BB%80%E4%B9%88%E6%98%AF%E5%A4%9A%E9%A1%B9%E5%BC%8F%E4%B9%98%E7%A7%AF%EF%BC%8C%E6%80%9D%E8%B7%AF%E4%BB%8E%E5%93%AA%E5%BC%80%E5%A7%8B%EF%BC%9F"><span class="nav-number">3.</span> <span class="nav-text">什么是多项式，什么是多项式乘积，思路从哪开始？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8D%95%E4%BD%8D%E6%A0%B9"><span class="nav-number">4.</span> <span class="nav-text">单位根</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5-%E7%A6%BB%E6%95%A3%E5%82%85%E9%87%8C%E5%8F%B6%E5%8F%98%E6%8D%A2-DFT"><span class="nav-number">5.</span> <span class="nav-text">第一步 离散傅里叶变换 DFT</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5-%E5%AF%B9%E5%BA%94%E7%9B%B8%E4%B9%98%EF%BC%8C%E5%BE%97%E5%88%B0%E6%89%80%E6%B1%82%E5%A4%9A%E9%A1%B9%E5%BC%8F%E7%9A%84%E7%82%B9%E5%80%BC%E8%A1%A8%E7%A4%BA"><span class="nav-number">6.</span> <span class="nav-text">第二步 对应相乘，得到所求多项式的点值表示</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E6%AD%A5-%E7%A6%BB%E6%95%A3%E5%82%85%E9%87%8C%E5%8F%B6%E9%80%86%E5%8F%98%E6%8D%A2-IDFT"><span class="nav-number">7.</span> <span class="nav-text">第三步 离散傅里叶逆变换 IDFT</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81"><span class="nav-number">8.</span> <span class="nav-text">代码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%86%E6%9E%90%E9%80%92%E5%BD%92%E8%BF%87%E7%A8%8B%E5%B9%B6%E5%88%A9%E7%94%A8%E8%9D%B4%E8%9D%B6%E6%93%8D%E4%BD%9C%E4%BC%98%E5%8C%96"><span class="nav-number">9.</span> <span class="nav-text">分析递归过程并利用蝴蝶操作优化</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">10.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80-premise"><span class="nav-number">1.</span> <span class="nav-text">前言 Premise</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -423,7 +546,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">1</span>
+          <span class="site-state-item-count">2</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
